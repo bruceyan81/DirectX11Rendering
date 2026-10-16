@@ -1,0 +1,31 @@
+# Build output
+
+/build/
+/out/
+
+
+# Visual Studio
+
+/.vs/
+*.user
+*.suo
+
+# Compiler / linker output
+
+*.obj
+*.o
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.ipdb
+*.iobj
+
+*.exe
+*.dll
+*.lib
+*.exp
+
+# Local CMake configuration
+
+CMakeUserPresets.json
