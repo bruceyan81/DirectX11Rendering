@@ -1,0 +1,81 @@
+# Requires clang-format 22.x.
+
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++20
+
+# Line width and indentation
+ColumnLimit: 120
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# Pointers
+PointerAlignment: Left
+
+# Braces
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeWhile: true
+  IndentBraces: false
+
+# Short constructs
+AllowShortBlocksOnASingleLine: Empty
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: false
+
+# Function calls and braced lists
+AlignAfterOpenBracket: false
+AllowAllArgumentsOnNextLine: false
+BinPackArguments: false
+BinPackLongBracedList: false
+BreakAfterOpenBracketFunction: true
+BreakBeforeCloseBracketFunction: true
+BreakAfterOpenBracketBracedList: true
+BreakBeforeCloseBracketBracedList: true
+Cpp11BracedListStyle: AlignFirstComment
+
+# Function declarations and definitions
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackParameters: OnePerLine
+
+# Expressions and alignment
+AlignOperands: DontAlign
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+AlignEscapedNewlines: Left
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+
+# Constructor initializers
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: CurrentLine
+
+# Access modifiers
+AccessModifierOffset: -4
+EmptyLineBeforeAccessModifier: LogicalBlock
+
+# switch / case
+IndentCaseBlocks: false
+IndentCaseLabels: true
+SpaceBeforeCaseColon: false
+
+# Namespaces and preprocessor directives
+NamespaceIndentation: All
+IndentPPDirectives: BeforeHash
+
+# Includes
+SortIncludes: false

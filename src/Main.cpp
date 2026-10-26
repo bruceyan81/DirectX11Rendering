@@ -1,4 +1,10 @@
-int main()
+#include "Application/Application.h"
+
+#include <Windows.h>
+
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
-    return 0;
+    ApplicationSpace::Application application{};
+
+    return application.run();
 }
