@@ -166,6 +166,7 @@ namespace PlatformSpace::WindowSpace
             return {InitializationStatus::Failure, {"CreateWindowExW", static_cast<std::uint32_t>(errorCode)}};
         }
 
+        // TODO: Propagate unexpected client-area dimensions after project-level error handling is available
         RECT clientRect{};
 
         if (::GetClientRect(impl_->windowHandle_, &clientRect) == FALSE)
@@ -177,20 +178,6 @@ namespace PlatformSpace::WindowSpace
                 {
                     "GetClientRect",
                     static_cast<std::uint32_t>(errorCode),
-                },
-            };
-        }
-
-        const int clientWidth = clientRect.right - clientRect.left;
-        const int clientHeight = clientRect.bottom - clientRect.top;
-
-        if (clientWidth != kClientWidth || clientHeight != kClientHeight)
-        {
-            return {
-                InitializationStatus::Failure,
-                {
-                    "GetClientRect",
-                    ERROR_INVALID_DATA,
                 },
             };
         }
