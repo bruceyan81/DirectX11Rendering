@@ -7,6 +7,7 @@ add_executable(DirectX11Rendering WIN32
     src/Application/Application.cpp
     src/Platform/Application.manifest
     src/Platform/Window/Window.cpp
+    src/Rendering/D3D11Renderer.cpp
 )
 
 target_include_directories(DirectX11Rendering PRIVATE
@@ -26,6 +27,7 @@ target_compile_definitions(DirectX11Rendering PRIVATE
 )
 
 target_link_libraries(DirectX11Rendering PRIVATE
+    d3d11
     user32
 )
 

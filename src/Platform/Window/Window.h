@@ -6,41 +6,41 @@
 
 namespace PlatformSpace::WindowSpace
 {
+    struct WindowWin32Error final
+    {
+        std::string_view functionName_;
+        std::uint32_t    errorCode_{0};
+    };
+
+    enum class WindowInitializationStatus
+    {
+        Success,
+        Failure
+    };
+
+    struct WindowInitializationResult final
+    {
+        WindowInitializationStatus status_{WindowInitializationStatus::Failure};
+        WindowWin32Error           error_;
+    };
+
+    enum class WindowMessageProcessingStatus
+    {
+        Dispatched,
+        Quit,
+        Failure
+    };
+
+    struct WindowMessageProcessingResult final
+    {
+        WindowMessageProcessingStatus status_{WindowMessageProcessingStatus::Failure};
+        int                           exitCode_{0};
+        WindowWin32Error              error_;
+    };
+
     class Window final
     {
     public:
-        struct Win32Error final
-        {
-            std::string_view functionName_;
-            std::uint32_t    errorCode_{0};
-        };
-
-        enum class InitializationStatus
-        {
-            Success,
-            Failure
-        };
-
-        struct InitializationResult final
-        {
-            InitializationStatus status_{InitializationStatus::Failure};
-            Win32Error           error_;
-        };
-
-        enum class MessageProcessingStatus
-        {
-            Dispatched,
-            Quit,
-            Failure
-        };
-
-        struct MessageProcessingResult final
-        {
-            MessageProcessingStatus status_{MessageProcessingStatus::Failure};
-            int                     exitCode_{0};
-            Win32Error              error_;
-        };
-
         Window();
         ~Window();
 
@@ -49,9 +49,9 @@ namespace PlatformSpace::WindowSpace
         Window(Window&&) = delete;
         Window& operator=(Window&&) = delete;
 
-        [[nodiscard]] InitializationResult    initialize();
-        void                                  show();
-        [[nodiscard]] MessageProcessingResult processNextMessage();
+        [[nodiscard]] WindowInitializationResult    initialize();
+        void                                        show();
+        [[nodiscard]] WindowMessageProcessingResult processNextMessage();
 
     private:
         struct Impl;

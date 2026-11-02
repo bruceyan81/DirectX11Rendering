@@ -73,7 +73,7 @@ namespace PlatformSpace::WindowSpace
 
     Window::~Window() = default;
 
-    Window::InitializationResult Window::initialize()
+    WindowInitializationResult Window::initialize()
     {
         // nullptr は現在の実行ファイルのモジュールを指定
         impl_->instance_ = ::GetModuleHandleW(nullptr);
@@ -83,7 +83,7 @@ namespace PlatformSpace::WindowSpace
             const DWORD errorCode = ::GetLastError();
 
             return {
-                InitializationStatus::Failure,
+                WindowInitializationStatus::Failure,
                 {
                     "GetModuleHandleW",
                     // Windows 型を公開ヘッダーへ伝播させないため標準整数型へ変換
@@ -105,7 +105,7 @@ namespace PlatformSpace::WindowSpace
         {
             const DWORD errorCode = ::GetLastError();
 
-            return {InitializationStatus::Failure, {"LoadCursorW", static_cast<std::uint32_t>(errorCode)}};
+            return {WindowInitializationStatus::Failure, {"LoadCursorW", static_cast<std::uint32_t>(errorCode)}};
         }
 
         // ウィンドウ生成に先立ってクラス情報を Windows に登録
@@ -116,7 +116,7 @@ namespace PlatformSpace::WindowSpace
             const DWORD errorCode = ::GetLastError();
 
             return {
-                InitializationStatus::Failure,
+                WindowInitializationStatus::Failure,
                 {
                     "RegisterClassExW",
                     static_cast<std::uint32_t>(errorCode),
@@ -132,7 +132,7 @@ namespace PlatformSpace::WindowSpace
             const DWORD errorCode = ::GetLastError();
 
             return {
-                InitializationStatus::Failure,
+                WindowInitializationStatus::Failure,
                 {
                     "AdjustWindowRectEx",
                     static_cast<std::uint32_t>(errorCode),
@@ -163,7 +163,7 @@ namespace PlatformSpace::WindowSpace
         {
             const DWORD errorCode = ::GetLastError();
 
-            return {InitializationStatus::Failure, {"CreateWindowExW", static_cast<std::uint32_t>(errorCode)}};
+            return {WindowInitializationStatus::Failure, {"CreateWindowExW", static_cast<std::uint32_t>(errorCode)}};
         }
 
         // TODO: Propagate unexpected client-area dimensions after project-level error handling is available
@@ -174,7 +174,7 @@ namespace PlatformSpace::WindowSpace
             const DWORD errorCode = ::GetLastError();
 
             return {
-                InitializationStatus::Failure,
+                WindowInitializationStatus::Failure,
                 {
                     "GetClientRect",
                     static_cast<std::uint32_t>(errorCode),
@@ -182,7 +182,7 @@ namespace PlatformSpace::WindowSpace
             };
         }
 
-        return {InitializationStatus::Success, {}};
+        return {WindowInitializationStatus::Success, {}};
     }
 
     void Window::show()
@@ -191,7 +191,7 @@ namespace PlatformSpace::WindowSpace
         ::ShowWindow(impl_->windowHandle_, SW_SHOW);
     }
 
-    Window::MessageProcessingResult Window::processNextMessage()
+    WindowMessageProcessingResult Window::processNextMessage()
     {
         MSG message{};
 
@@ -203,7 +203,7 @@ namespace PlatformSpace::WindowSpace
             const DWORD errorCode = ::GetLastError();
 
             return {
-                MessageProcessingStatus::Failure,
+                WindowMessageProcessingStatus::Failure,
                 0,
                 {
                     "GetMessageW",
@@ -215,7 +215,7 @@ namespace PlatformSpace::WindowSpace
         if (getMessageResult == 0)
         {
             return {
-                MessageProcessingStatus::Quit,
+                WindowMessageProcessingStatus::Quit,
                 static_cast<int>(message.wParam),
                 {}
             };
@@ -225,7 +225,7 @@ namespace PlatformSpace::WindowSpace
         ::DispatchMessageW(&message);
 
         return {
-            MessageProcessingStatus::Dispatched,
+            WindowMessageProcessingStatus::Dispatched,
             0,
             {}
         };
