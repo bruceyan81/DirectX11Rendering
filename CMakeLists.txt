@@ -28,6 +28,7 @@ target_compile_definitions(DirectX11Rendering PRIVATE
 
 target_link_libraries(DirectX11Rendering PRIVATE
     d3d11
+    dxgi
     user32
 )
 

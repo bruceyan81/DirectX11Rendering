@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -15,13 +17,14 @@ namespace RenderingSpace
     enum class D3D11RendererInitStatus
     {
         Success,
-        Failure
+        Failure,
+        InvalidWindowParameters
     };
 
     struct D3D11RendererInitResult final
     {
         D3D11RendererInitStatus status_{D3D11RendererInitStatus::Failure};
-        D3D11HResultError         error_;
+        D3D11HResultError       error_;
     };
 
     class D3D11Renderer final
@@ -35,7 +38,8 @@ namespace RenderingSpace
         D3D11Renderer(D3D11Renderer&&) = delete;
         D3D11Renderer& operator=(D3D11Renderer&&) = delete;
 
-        [[nodiscard]] D3D11RendererInitResult initialize();
+        [[nodiscard]] D3D11RendererInitResult
+        initialize(HWND windowHandle, std::uint32_t clientWidth, std::uint32_t clientHeight);
 
     private:
         struct Impl;

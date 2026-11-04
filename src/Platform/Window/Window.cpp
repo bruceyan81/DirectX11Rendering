@@ -62,9 +62,11 @@ namespace PlatformSpace::WindowSpace
         }
 
         // GetModuleHandleW が返す非所有ハンドル
-        HINSTANCE instance_{nullptr};
-        HWND      windowHandle_{nullptr};
-        ATOM      windowClassAtom_{0};
+        HINSTANCE     instance_{nullptr};
+        HWND          windowHandle_{nullptr};
+        ATOM          windowClassAtom_{0};
+        std::uint32_t clientWidth_{0};
+        std::uint32_t clientHeight_{0};
     };
 
     Window::Window() : impl_(std::make_unique<Impl>())
@@ -166,7 +168,6 @@ namespace PlatformSpace::WindowSpace
             return {WindowInitializationStatus::Failure, {"CreateWindowExW", static_cast<std::uint32_t>(errorCode)}};
         }
 
-        // TODO: Propagate unexpected client-area dimensions after project-level error handling is available
         RECT clientRect{};
 
         if (::GetClientRect(impl_->windowHandle_, &clientRect) == FALSE)
@@ -181,6 +182,17 @@ namespace PlatformSpace::WindowSpace
                 },
             };
         }
+
+        const LONG clientWidth = clientRect.right - clientRect.left;
+        const LONG clientHeight = clientRect.bottom - clientRect.top;
+
+        if (clientWidth <= 0 || clientHeight <= 0)
+        {
+            return {WindowInitializationStatus::InvalidClientArea, {}};
+        }
+
+        impl_->clientWidth_ = static_cast<std::uint32_t>(clientWidth);
+        impl_->clientHeight_ = static_cast<std::uint32_t>(clientHeight);
 
         return {WindowInitializationStatus::Success, {}};
     }
@@ -224,10 +236,21 @@ namespace PlatformSpace::WindowSpace
         ::TranslateMessage(&message);
         ::DispatchMessageW(&message);
 
-        return {
-            WindowMessageProcessingStatus::Dispatched,
-            0,
-            {}
-        };
+        return {WindowMessageProcessingStatus::Dispatched, 0, {}};
+    }
+
+    HWND Window::nativeHandle() const
+    {
+        return impl_->windowHandle_;
+    }
+
+    std::uint32_t Window::getClientWidth() const
+    {
+        return impl_->clientWidth_;
+    }
+
+    std::uint32_t Window::getClientHeight() const
+    {
+        return impl_->clientHeight_;
     }
 } // namespace PlatformSpace::WindowSpace

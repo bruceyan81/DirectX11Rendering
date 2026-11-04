@@ -45,13 +45,38 @@ namespace ApplicationSpace
             return EXIT_FAILURE;
         }
 
+        if (windowInitializationResult.status_ == PlatformSpace::WindowSpace::WindowInitializationStatus::InvalidClientArea)
+        {
+            ::MessageBoxW(
+                nullptr,
+                L"Window client area has invalid dimensions.",
+                L"DirectX11Rendering Error",
+                MB_OK | MB_ICONERROR
+            );
+
+            return EXIT_FAILURE;
+        }
+
         RenderingSpace::D3D11Renderer renderer;
 
-        const auto rendererInitializationResult = renderer.initialize();
+        const auto rendererInitializationResult =
+            renderer.initialize(window.nativeHandle(), window.getClientWidth(), window.getClientHeight());
 
         if (rendererInitializationResult.status_ == RenderingSpace::D3D11RendererInitStatus::Failure)
         {
             showD3D11Error(rendererInitializationResult.error_);
+            return EXIT_FAILURE;
+        }
+
+        if (rendererInitializationResult.status_ == RenderingSpace::D3D11RendererInitStatus::InvalidWindowParameters)
+        {
+            ::MessageBoxW(
+                nullptr,
+                L"Renderer received invalid window parameters.",
+                L"DirectX11Rendering Error",
+                MB_OK | MB_ICONERROR
+            );
+
             return EXIT_FAILURE;
         }
 

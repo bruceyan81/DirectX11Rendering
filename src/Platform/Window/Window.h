@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -15,7 +17,8 @@ namespace PlatformSpace::WindowSpace
     enum class WindowInitializationStatus
     {
         Success,
-        Failure
+        Failure,
+        InvalidClientArea
     };
 
     struct WindowInitializationResult final
@@ -50,8 +53,12 @@ namespace PlatformSpace::WindowSpace
         Window& operator=(Window&&) = delete;
 
         [[nodiscard]] WindowInitializationResult    initialize();
-        void                                        show();
         [[nodiscard]] WindowMessageProcessingResult processNextMessage();
+        HWND          nativeHandle() const;
+        std::uint32_t getClientWidth() const;
+        std::uint32_t getClientHeight() const;
+
+        void show();
 
     private:
         struct Impl;
