@@ -59,8 +59,7 @@ namespace ApplicationSpace
 
         RenderingSpace::D3D11Renderer renderer;
 
-        const auto rendererInitializationResult =
-            renderer.initialize(window.nativeHandle(), window.getClientWidth(), window.getClientHeight());
+        const auto rendererInitializationResult = renderer.initialize(window);
 
         if (rendererInitializationResult.status_ == RenderingSpace::D3D11RendererInitStatus::Failure)
         {

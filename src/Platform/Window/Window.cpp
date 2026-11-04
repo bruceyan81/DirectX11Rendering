@@ -1,7 +1,8 @@
 #include "Window.h"
 
+#include "Detail/WindowImpl.h"
+
 #include <cassert>
-#include <Windows.h>
 
 namespace PlatformSpace::WindowSpace
 {
@@ -16,58 +17,48 @@ namespace PlatformSpace::WindowSpace
         constexpr DWORD kWindowExtendedStyle = 0;
     } // namespace
 
-    struct Window::Impl final
+    Window::Impl::~Impl()
     {
-        ~Impl()
+        if (windowHandle_ != nullptr)
         {
-            if (windowHandle_ != nullptr)
-            {
-                ::DestroyWindow(windowHandle_);
-            }
-
-            if (windowClassAtom_ != 0)
-            {
-                ::UnregisterClassW(kWindowClassName, instance_);
-            }
+            ::DestroyWindow(windowHandle_);
         }
 
-        static LRESULT CALLBACK windowProcedure(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
+        if (windowClassAtom_ != 0)
         {
-            // 終了操作をスレッドの終了メッセージへ変換
-            switch (message)
+            ::UnregisterClassW(kWindowClassName, instance_);
+        }
+    }
+
+    LRESULT CALLBACK Window::Impl::windowProcedure(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
+    {
+        // 終了操作をスレッドの終了メッセージへ変換
+        switch (message)
+        {
+            case WM_CLOSE:
             {
-                case WM_CLOSE:
+                ::PostQuitMessage(0);
+                return 0;
+            }
+
+            case WM_KEYDOWN:
+            {
+                if (wParam == VK_ESCAPE)
                 {
                     ::PostQuitMessage(0);
                     return 0;
                 }
 
-                case WM_KEYDOWN:
-                {
-                    if (wParam == VK_ESCAPE)
-                    {
-                        ::PostQuitMessage(0);
-                        return 0;
-                    }
-
-                    break;
-                }
-
-                default:
-                    break;
+                break;
             }
 
-            // 未処理のメッセージは Windows の標準処理に委譲
-            return ::DefWindowProcW(windowHandle, message, wParam, lParam);
+            default:
+                break;
         }
 
-        // GetModuleHandleW が返す非所有ハンドル
-        HINSTANCE     instance_{nullptr};
-        HWND          windowHandle_{nullptr};
-        ATOM          windowClassAtom_{0};
-        std::uint32_t clientWidth_{0};
-        std::uint32_t clientHeight_{0};
-    };
+        // 未処理のメッセージは Windows の標準処理に委譲
+        return ::DefWindowProcW(windowHandle, message, wParam, lParam);
+    }
 
     Window::Window() : impl_(std::make_unique<Impl>())
     {
@@ -239,18 +230,4 @@ namespace PlatformSpace::WindowSpace
         return {WindowMessageProcessingStatus::Dispatched, 0, {}};
     }
 
-    HWND Window::nativeHandle() const
-    {
-        return impl_->windowHandle_;
-    }
-
-    std::uint32_t Window::getClientWidth() const
-    {
-        return impl_->clientWidth_;
-    }
-
-    std::uint32_t Window::getClientHeight() const
-    {
-        return impl_->clientHeight_;
-    }
 } // namespace PlatformSpace::WindowSpace

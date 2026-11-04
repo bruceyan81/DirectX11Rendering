@@ -1,10 +1,13 @@
 #pragma once
 
-#include <Windows.h>
-
 #include <cstdint>
 #include <memory>
 #include <string_view>
+
+namespace RenderingSpace
+{
+    class D3D11Renderer;
+}
 
 namespace PlatformSpace::WindowSpace
 {
@@ -54,14 +57,13 @@ namespace PlatformSpace::WindowSpace
 
         [[nodiscard]] WindowInitializationResult    initialize();
         [[nodiscard]] WindowMessageProcessingResult processNextMessage();
-        HWND          nativeHandle() const;
-        std::uint32_t getClientWidth() const;
-        std::uint32_t getClientHeight() const;
 
         void show();
 
     private:
         struct Impl;
         std::unique_ptr<Impl> impl_;
+
+        friend class RenderingSpace::D3D11Renderer;
     };
 } // namespace PlatformSpace::WindowSpace

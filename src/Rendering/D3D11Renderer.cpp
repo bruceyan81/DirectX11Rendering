@@ -1,5 +1,7 @@
 #include "D3D11Renderer.h"
 
+#include "Platform/Window/Detail/WindowImpl.h"
+
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <wrl/client.h>
@@ -32,9 +34,12 @@ namespace RenderingSpace
     {
     }
 
-    D3D11RendererInitResult
-    D3D11Renderer::initialize(HWND windowHandle, std::uint32_t clientWidth, std::uint32_t clientHeight)
+    D3D11RendererInitResult D3D11Renderer::initialize(PlatformSpace::WindowSpace::Window& window)
     {
+        const HWND          windowHandle = window.impl_->windowHandle_;
+        const std::uint32_t clientWidth = window.impl_->clientWidth_;
+        const std::uint32_t clientHeight = window.impl_->clientHeight_;
+
         if (::IsWindow(windowHandle) == FALSE || clientWidth == 0 || clientHeight == 0)
         {
             return {D3D11RendererInitStatus::InvalidWindowParameters, {}};

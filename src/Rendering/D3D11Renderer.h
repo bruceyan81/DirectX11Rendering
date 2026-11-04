@@ -1,10 +1,13 @@
 #pragma once
 
-#include <Windows.h>
-
 #include <cstdint>
 #include <memory>
 #include <string_view>
+
+namespace PlatformSpace::WindowSpace
+{
+    class Window;
+}
 
 namespace RenderingSpace
 {
@@ -38,8 +41,7 @@ namespace RenderingSpace
         D3D11Renderer(D3D11Renderer&&) = delete;
         D3D11Renderer& operator=(D3D11Renderer&&) = delete;
 
-        [[nodiscard]] D3D11RendererInitResult
-        initialize(HWND windowHandle, std::uint32_t clientWidth, std::uint32_t clientHeight);
+        [[nodiscard]] D3D11RendererInitResult initialize(PlatformSpace::WindowSpace::Window& window);
 
     private:
         struct Impl;
